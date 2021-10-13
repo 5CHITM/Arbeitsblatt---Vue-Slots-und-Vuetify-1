@@ -1,0 +1,271 @@
+Aufgabe 1: Erstelle eine Komponente Sheet.vue. Die Komponente besitzt einen Slot. Die Komponente verwendet intern
+die Klasse slot-style:
+
+App.vue:
+
+<template>
+  <div id="app">
+    <div style="display:flex">
+      <Sheet style="margin-left:20px">
+        <h3>Memo to myself</h3>
+        <p>Always prepare for PLFs in time!</p>
+        <img src="info.svg" width="80px" />
+      </Sheet>
+      <Sheet style="margin-left:20px">
+        <p>INSY, SEW and Webtechnologies are our favorite subjects!</p>
+        <span style="font-style: italic">Starkschwitz Fiedler, Jan Schreck</span>
+        <p>Wish i was there!</p>
+        <span style="font-style: italic">E. Wahn</span>
+      </Sheet>
+    </div>
+  </div>
+</template>
+
+<script>
+import Sheet from '@/components/Sheet.vue';
+export default {
+  name: 'App',
+  components: {
+    Sheet,
+  },
+};
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  margin-top: 60px;
+}
+</style>
+
+Sheet.vue:
+
+<template>
+  <div class="slot-style">
+    <button v-on="$listeners"><slot /></button>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style scoped>
+.slot-style {
+  padding: 15px;
+  width: 300px;
+  height: 300px;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+}
+</style>
+
+
+Aufgabe 2: Probiere das aus! Spielt die Reihenfolge der Slots Angaben in App.vue eine Rolle!
+Die Reihenfolge spielt keine Rolle weil die Reihenfolge durch v-Slot gesetzt wird.
+
+
+Aufgabe 3: Erstelle selbst eine DataTable Komponente mit drei Slots: für die Überschrift (header), eine letzte Tabellenzeile (body.append) und den Footer (footer). Style in der DataTable Komponente deine Tabelle.
+
+App.vue:
+<template>
+  <div id="app">
+    <DataTable :items="desserts" :headers="headers">
+      <template v-slot:header>
+        <h2>Watch What You Eat!</h2>
+      </template>
+      <template v-slot:footer> Created 2021 by Robert Baumgartner </template>
+    </DataTable>
+  </div>
+</template>
+
+<script>
+// import Sheet from '@/components/Sheet.vue';
+// import AppLayout from '@/components/AppLayout.vue';
+import DataTable from '@/components/DataTable.vue';
+export default {
+  name: 'App',
+  components: {
+    // Sheet,
+    // AppLayout,
+    DataTable,
+  },
+  data() {
+    return {
+      headers: [
+        {
+          text: 'Dessert (100g serving)',
+          value: 'name',
+        },
+        { text: 'Calories', value: 'calories' },
+        { text: 'Fat (g)', value: 'fat' },
+        { text: 'Carbs (g)', value: 'carbs' },
+        { text: 'Protein (g)', value: 'protein' },
+        { text: 'Iron (%)', value: 'iron' },
+      ],
+      desserts: [
+        {
+          name: 'Frozen Yogurt',
+          calories: 159,
+          fat: 6.0,
+          carbs: 24,
+          protein: 4.0,
+          iron: '1%',
+        },
+        {
+          name: 'Ice cream sandwich',
+          calories: 237,
+          fat: 9.0,
+          carbs: 37,
+          protein: 4.3,
+          iron: '1%',
+        },
+        {
+          name: 'Eclair',
+          calories: 262,
+          fat: 16.0,
+          carbs: 23,
+          protein: 6.0,
+          iron: '7%',
+        },
+        {
+          name: 'Cupcake',
+          calories: 305,
+          fat: 3.7,
+          carbs: 67,
+          protein: 4.3,
+          iron: '8%',
+        },
+        {
+          name: 'Gingerbread',
+          calories: 356,
+          fat: 16.0,
+          carbs: 49,
+          protein: 3.9,
+          iron: '16%',
+        },
+        {
+          name: 'Jelly bean',
+          calories: 375,
+          fat: 0.0,
+          carbs: 94,
+          protein: 0.0,
+          iron: '0%',
+        },
+        {
+          name: 'Lollipop',
+          calories: 392,
+          fat: 0.2,
+          carbs: 98,
+          protein: 0,
+          iron: '2%',
+        },
+        {
+          name: 'Honeycomb',
+          calories: 408,
+          fat: 3.2,
+          carbs: 87,
+          protein: 6.5,
+          iron: '45%',
+        },
+        {
+          name: 'Donut',
+          calories: 452,
+          fat: 25.0,
+          carbs: 51,
+          protein: 4.9,
+          iron: '22%',
+        },
+        {
+          name: 'KitKat',
+          calories: 518,
+          fat: 26.0,
+          carbs: 65,
+          protein: 7,
+          iron: '6%',
+        },
+      ],
+    };
+  },
+};
+</script>
+
+<style>
+#app {
+  text-align: center;
+}
+</style>
+
+
+
+
+DataTable.vue:
+<template>
+  <div class="data-table">
+    <h2><slot name="header"></slot></h2>
+    <table>
+      <thead>
+        <tr>
+          <th v-for="(item, i) in headers" :key="i">{{ item.text }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, idx) in items" :key="idx">
+          <th scope="row">{{ item.name }}</th>
+          <template v-for="(el, i) in item">
+            <td :key="i" v-if="i != 'name'">{{ el }}</td>
+          </template>
+        </tr>
+      </tbody>
+    </table>
+    <footer><slot name="footer"></slot></footer>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ['items', 'headers'],
+};
+</script>
+
+<style scoped>
+.data-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  margin: 40px;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.data-table td,
+th {
+  text-align: left;
+}
+.data-table footer {
+  margin: 30px 0 30px 0;
+  font-style: italic;
+}
+.data-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+}
+.data-table th,
+.data-table td {
+  padding: 12px 15px;
+}
+.data-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+.data-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+</style>
+
+
